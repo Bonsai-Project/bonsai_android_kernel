@@ -1,6 +1,4 @@
-EC05_Genocide_initramfs/
-EC05_Genocide_initramfs/*
-Kernel/arch/arm/boot/sph-D700-kernel.tar
+arch/arm/boot/sph-D700-kernel.tar
 *.diff
 *.patch
 *~
@@ -28,8 +26,10 @@ kernel/bounds.s
 kernel/timeconst.h
 usr/.initramfs_data.cpio.d
 usr/gen_init_cpio
-Kernel/arch/arm/boot/compressed/lib1funcs.S
-Kernel/arch/arm/boot/xipImage
+arch/arm/boot/compressed/lib1funcs.S
+arch/arm/boot/xipImage
+arch/arm/boot/compressed/piggy.gzip
+usr/initramfs_data.cpio.bz2
 include/asm
 include/config/
 include/generated/
