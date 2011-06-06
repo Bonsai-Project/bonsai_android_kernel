@@ -34,7 +34,7 @@
 
 #ifdef CONFIG_CPU_S5PV210
 #define DEF_SAMPLING_FREQ_STEP  20
-extern unsigned int s5pc11x_target_frq(unsigned int pred_freq, int flag);
+extern unsigned int s5pc11x_target_frq(unsigned int pred_freq, int flag, unsigned int policy_min);
 #else
 #define DEF_SAMPLING_FREQ_STEP 5
 #endif
@@ -480,7 +480,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 
 		this_dbs_info->requested_freq += freq_target;
 #else
-		this_dbs_info->requested_freq = s5pc11x_target_frq(this_dbs_info->requested_freq, 1);
+		this_dbs_info->requested_freq = s5pc11x_target_frq(this_dbs_info->requested_freq, 1, policy->min);
 #endif
 
 		if (this_dbs_info->requested_freq > policy->max)
@@ -506,7 +506,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		this_dbs_info->requested_freq -= freq_target;
 
 #else
-		this_dbs_info->requested_freq = s5pc11x_target_frq(this_dbs_info->requested_freq, -1);
+		this_dbs_info->requested_freq = s5pc11x_target_frq(this_dbs_info->requested_freq, -1, policy->min);
 #endif
 	DBG(KERN_INFO "CPUFREQ: after s5pc11x_target_frq this_dbs_info->requested_freq = %d\n", this_dbs_info->requested_freq);
 		if (this_dbs_info->requested_freq < policy->min)
