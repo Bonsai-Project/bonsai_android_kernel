@@ -1230,7 +1230,7 @@ static void hci_add_acl_hdr(struct sk_buff *skb, __u16 handle, __u16 flags)
 	hdr->dlen   = cpu_to_le16(len);
 }
 
-void hci_send_acl(struct hci_conn *conn, struct sk_buff *skb, __u16 flags)
+int hci_send_acl(struct hci_conn *conn, struct sk_buff *skb, __u16 flags)
 {
 	struct hci_dev *hdev = conn->hdev;
 	struct sk_buff *list;
@@ -1274,17 +1274,22 @@ void hci_send_acl(struct hci_conn *conn, struct sk_buff *skb, __u16 flags)
 	}
 
 	hci_sched_tx(hdev);
-	return;
+	return 0;
 }
 EXPORT_SYMBOL(hci_send_acl);
 
 /* Send SCO data */
-void hci_send_sco(struct hci_conn *conn, struct sk_buff *skb)
+int hci_send_sco(struct hci_conn *conn, struct sk_buff *skb)
 {
 	struct hci_dev *hdev = conn->hdev;
 	struct hci_sco_hdr hdr;
 
 	BT_DBG("%s len %d", hdev->name, skb->len);
+
+	if (skb->len > hdev->sco_mtu) {
+		kfree_skb(skb);
+		return -EINVAL;
+	}
 
 	hdr.handle = cpu_to_le16(conn->handle);
 	hdr.dlen   = skb->len;
@@ -1297,6 +1302,7 @@ void hci_send_sco(struct hci_conn *conn, struct sk_buff *skb)
 	bt_cb(skb)->pkt_type = HCI_SCODATA_PKT;
 	skb_queue_tail(&conn->data_q, skb);
 	hci_sched_tx(hdev);
+	return 0;
 }
 EXPORT_SYMBOL(hci_send_sco);
 
